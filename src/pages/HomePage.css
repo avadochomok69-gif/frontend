@@ -6,12 +6,14 @@
 
 /* ─── MOBILE-ONLY ─── */
 .mobile-search-section,
+.mobile-banner-section,
 .mobile-flash-section,
 .mobile-categories-section {
   display: none;
 }
 @media (max-width: 768px) {
   .mobile-search-section,
+  .mobile-banner-section,
   .mobile-flash-section,
   .mobile-categories-section {
     display: block;

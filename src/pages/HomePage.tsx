@@ -94,11 +94,11 @@ const HomePage = () => {
 
       {/* Mobile: Banner Section */}
       {banners.length > 0 && (
-        <section className="mobile-banner-section" style={{ padding: '0 15px', marginBottom: '15px' }}>
+        <section className="mobile-banner-section" style={{ padding: '0 15px', marginTop: '12px', marginBottom: '10px' }}>
           <img 
             src={banners[0].image_url} 
             alt="Promotion Banner" 
-            style={{ width: '100%', borderRadius: '12px', objectFit: 'cover', display: 'block' }} 
+            style={{ width: '100%', height: '30vh', borderRadius: '12px', objectFit: 'cover', display: 'block' }} 
           />
         </section>
       )}
