@@ -72,7 +72,7 @@ function AppRoutes() {
         </Routes>
       </main>
       {!isAdmin && <Footer />}
-      {!isAdmin && <MobileBottomNav />}
+      <MobileBottomNav />
     </div>
   );
 }

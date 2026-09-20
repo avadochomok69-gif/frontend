@@ -1,14 +1,14 @@
 import React, { useEffect, useState, type FormEvent } from 'react';
 import { api, formatCurrency } from '../../lib/api';
 import supabase from '../../lib/supabaseClient';
-import type { Category, Order, OrderStatus, Product } from '../../lib/api';
+import type { Category, Order, OrderStatus, Product, Banner } from '../../lib/api';
 import { AdminLogin } from './AdminLogin';
 import { AdminSummary } from './AdminSummary';
 import './Admin.css';
 
 const BUCKET = import.meta.env.VITE_SUPABASE_BUCKET ?? 'uploads';
 
-type Tab = 'summary' | 'orders' | 'products' | 'categories';
+type Tab = 'summary' | 'orders' | 'products' | 'categories' | 'banners';
 type OptionDraft = { id: string; value: string; priceAdded: string; image: File | null; imageUrl?: string | null; };
 type GroupDraft = { id: string; name: string; options: OptionDraft[]; };
 
@@ -36,6 +36,7 @@ const AdminDashboard = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [banners, setBanners] = useState<Banner[]>([]);
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState('');
   const [err, setErr] = useState('');
@@ -57,11 +58,14 @@ const AdminDashboard = () => {
   const [mainImg, setMainImg] = useState<File | null>(null);
   const [secImgs, setSecImgs] = useState<FileList | null>(null);
 
+  // Banner form
+  const [bannerImage, setBannerImage] = useState<File | null>(null);
+
   const loadData = async () => {
     setLoading(true); setErr('');
     try {
-      const [cats, prods, ords] = await Promise.all([api.getCategories(), api.getProducts(), api.getOrders()]);
-      setCategories(cats); setProducts(prods); setOrders(ords);
+      const [cats, prods, ords, bans] = await Promise.all([api.getCategories(), api.getProducts(), api.getOrders(), api.getBanners()]);
+      setCategories(cats); setProducts(prods); setOrders(ords); setBanners(bans);
     } catch (e) { setErr(e instanceof Error ? e.message : 'Failed to load data'); }
     finally { setLoading(false); }
   };
@@ -88,6 +92,17 @@ const AdminDashboard = () => {
       setCatName(''); setCatImage(null); setEditCatId(null); setExistCatImg(null);
       await loadData();
     } catch (e) { setErr(e instanceof Error ? e.message : 'Failed to save category'); }
+  };
+
+  const handleSaveBanner = async (ev: FormEvent) => {
+    ev.preventDefault(); setErr('');
+    if (!bannerImage) { setErr('Banner image is required'); return; }
+    try {
+      const imgUrl = await upload(bannerImage, 'banners');
+      await api.createBanner({ image_url: imgUrl }); flash('Banner created');
+      setBannerImage(null);
+      await loadData();
+    } catch (e) { setErr(e instanceof Error ? e.message : 'Failed to save banner'); }
   };
 
   const handleSaveProduct = async (ev: FormEvent) => {
@@ -152,7 +167,7 @@ const AdminDashboard = () => {
 
   if (!loggedIn) return <AdminLogin onLoginSuccess={() => setLoggedIn(true)} />;
 
-  const TABS: Tab[] = ['summary', 'orders', 'products', 'categories'];
+  const TABS: Tab[] = ['summary', 'orders', 'products', 'categories', 'banners'];
   const filteredOrders = orderFilter === 'ALL' ? orders : orders.filter(o => o.status === orderFilter);
 
   return (
@@ -468,6 +483,44 @@ const AdminDashboard = () => {
                     </tr>
                   ))}
                   {categories.length === 0 && <tr><td colSpan={4} className="ad-empty-row">No categories yet.</td></tr>}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
+
+        {/* ── Banners ── */}
+        {!loading && tab === 'banners' && (
+          <>
+            <div className="ad-form-card">
+              <h3>+ Add New Banner (Mobile)</h3>
+              <form onSubmit={handleSaveBanner}>
+                <div className="ad-form-row">
+                  <div className="ad-fg">
+                    <label>Banner Image *</label>
+                    <input type="file" accept="image/*" required onChange={e => setBannerImage(e.target.files?.[0] ?? null)} />
+                  </div>
+                </div>
+                <div className="ad-form-actions">
+                  <button type="submit" className="ad-btn-primary">Upload Banner</button>
+                </div>
+              </form>
+            </div>
+
+            <div className="ad-table-wrap">
+              <table className="ad-table">
+                <thead><tr><th>Image</th><th>Date Added</th><th>Actions</th></tr></thead>
+                <tbody>
+                  {banners.map(b => (
+                    <tr key={b.id}>
+                      <td><img src={b.image_url} alt="Banner" className="ad-thumb" style={{ width: '120px', height: 'auto', objectFit: 'contain' }} /></td>
+                      <td>{new Date(b.created_at).toLocaleString('en-BD')}</td>
+                      <td className="ad-actions-cell">
+                        <button className="ad-btn-del" type="button" onClick={async () => { try { await api.deleteBanner(b.id); flash('Deleted'); await loadData(); } catch (e) { setErr(e instanceof Error ? e.message : 'Error'); } }}>Delete</button>
+                      </td>
+                    </tr>
+                  ))}
+                  {banners.length === 0 && <tr><td colSpan={3} className="ad-empty-row">No banners yet.</td></tr>}
                 </tbody>
               </table>
             </div>

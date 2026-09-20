@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Search, ArrowRight, ChevronRight, ShoppingBag, Zap, TrendingUp } from 'lucide-react';
 import { api } from '../lib/api';
-import type { Category, Product } from '../lib/api';
+import type { Category, Product, Banner } from '../lib/api';
 import ProductCard from '../components/ProductCard';
 import './HomePage.css';
 import '../components/ProductCard.css';
@@ -16,6 +16,7 @@ function scrollToSection(id: string) {
 const HomePage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [banners, setBanners] = useState<Banner[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [catalogFilter, setCatalogFilter] = useState<string>('all');
@@ -26,11 +27,12 @@ const HomePage = () => {
 
   useEffect(() => {
     let isMounted = true;
-    Promise.all([api.getCategories(), api.getProducts()])
-      .then(([cats, allProds]) => {
+    Promise.all([api.getCategories(), api.getProducts(), api.getBanners()])
+      .then(([cats, allProds, bans]) => {
         if (!isMounted) return;
         setCategories(cats);
         setAllProducts(allProds);
+        setBanners(bans);
       })
       .catch((err: Error) => { if (isMounted) setError(err.message); })
       .finally(() => { if (isMounted) setIsLoading(false); });
@@ -89,6 +91,17 @@ const HomePage = () => {
           </div>
         </form>
       </div>
+
+      {/* Mobile: Banner Section */}
+      {banners.length > 0 && (
+        <section className="mobile-banner-section" style={{ padding: '0 15px', marginBottom: '15px' }}>
+          <img 
+            src={banners[0].image_url} 
+            alt="Promotion Banner" 
+            style={{ width: '100%', borderRadius: '12px', objectFit: 'cover', display: 'block' }} 
+          />
+        </section>
+      )}
 
       {/* Mobile: Flash Sales */}
       <section className="mobile-flash-section" id="flash-sales">

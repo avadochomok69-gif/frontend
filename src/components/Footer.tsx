@@ -59,7 +59,7 @@ const Footer = () => {
               <ul className="footer-contact-list">
                 <li>
                   <Phone size={15} className="contact-icon" />
-                  <span>01XXXXXXXXX</span>
+                  <span>01712 345678</span>
                 </li>
                 <li>
                   <Mail size={15} className="contact-icon" />
@@ -67,7 +67,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <MapPin size={15} className="contact-icon" />
-                  <span>Bangladesh</span>
+                  <span>Chittagong, Bangladesh</span>
                 </li>
               </ul>
             </div>

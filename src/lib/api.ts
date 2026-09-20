@@ -54,6 +54,12 @@ export type Category = {
   _count?: { products: number };
 };
 
+export type Banner = {
+  id: string;
+  image_url: string;
+  created_at: string;
+};
+
 export type ProductImage = {
   id: string;
   url: string;
@@ -174,6 +180,18 @@ export const api = {
   deleteCategory: (id: string) => request<{ success: true }>(`/categories/${id}`, { method: 'DELETE' }),
   updateCategory: (id: string, payload: { name: string; image_url?: string | null }) =>
     request<any>(`/categories/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }),
+
+  getBanners: async () => {
+    const raw = await request<any[]>('/banners');
+    return raw.map((r) => ({
+      id: r.id,
+      image_url: r.image_url ?? r.imageUrl,
+      created_at: r.created_at ?? r.createdAt,
+    })) as Banner[];
+  },
+  createBanner: (payload: { image_url: string }) =>
+    request<any>('/banners', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }),
+  deleteBanner: (id: string) => request<{ success: true }>(`/banners/${id}`, { method: 'DELETE' }),
 
   getProducts: async (params?: { isSignature?: boolean; categoryId?: string }) => {
     const search = new URLSearchParams();
