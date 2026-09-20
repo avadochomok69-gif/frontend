@@ -1,0 +1,144 @@
+.cat-page {
+  min-height: 80vh;
+  padding-bottom: 5rem;
+}
+
+/* ── Header ── */
+.cat-header {
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 1.25rem 0;
+  margin-bottom: 2rem;
+  position: sticky;
+  top: 72px;
+  z-index: 100;
+}
+
+@media (max-width: 768px) {
+  .cat-header { top: 0; }
+  .cat-page { padding-bottom: 6rem; }
+}
+
+.cat-header-inner {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.cat-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #f4f4f5;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.cat-back-btn:hover {
+  background: #e4e4e7;
+}
+
+.cat-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-primary);
+  font-weight: 700;
+  margin: 0;
+}
+
+.cat-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #111;
+  margin: 0;
+  line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+  .cat-title { font-size: 1.2rem; }
+}
+
+.cat-count {
+  margin-left: auto;
+  background: rgba(255,107,0,0.08);
+  color: var(--color-primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+/* ── Grid ── */
+.cat-body {
+  min-height: 400px;
+}
+
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 1024px) {
+  .cat-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .cat-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+}
+
+/* ── States ── */
+.cat-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 300px;
+  color: #999;
+  text-align: center;
+  padding: 4rem 1rem;
+}
+
+.cat-state p {
+  font-size: 1rem;
+}
+
+.cat-state button {
+  background: var(--color-primary);
+  color: #fff;
+  padding: 0.6rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cat-error p {
+  color: #dc2626;
+}
+
+.cat-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #f0f0f0;
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: cat-spin 0.7s linear infinite;
+}
+
+@keyframes cat-spin {
+  to { transform: rotate(360deg); }
+}

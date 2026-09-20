@@ -1,0 +1,76 @@
+/* Mobile Bottom Nav — only visible on mobile */
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: #FFFFFF;
+    border-top: 1.5px solid rgba(255, 107, 0, 0.15);
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+    height: 62px;
+    align-items: stretch;
+  }
+
+  .mob-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    color: #999;
+    font-size: 0.68rem;
+    font-weight: 500;
+    transition: color var(--transition-fast), background var(--transition-fast);
+    padding: 6px 0;
+    border-top: 2px solid transparent;
+    transition: all 0.2s ease;
+  }
+
+  .mob-nav-item:hover {
+    color: var(--color-orange);
+    background: rgba(255,107,0,0.04);
+  }
+
+  .mob-nav-item.active {
+    color: var(--color-orange);
+    border-top-color: var(--color-orange);
+  }
+
+  .mob-nav-item.active svg {
+    stroke: var(--color-orange);
+  }
+
+  /* Cart item special styling */
+  .mob-nav-cart .mob-cart-icon-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mob-cart-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: var(--color-orange);
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3px;
+    border: 1.5px solid #fff;
+  }
+}
