@@ -22,6 +22,12 @@ const HomePage = () => {
   const [catalogFilter, setCatalogFilter] = useState<string>('all');
   const [catalogVisible, setCatalogVisible] = useState(8);
   const [searchQuery, setSearchQuery] = useState('');
+  
+  // Banner Slider State
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -50,6 +56,34 @@ const HomePage = () => {
     }, 200);
     navigate(location.pathname, { replace: true, state: null });
   }, [location, navigate]);
+
+  // Auto slide banners
+  useEffect(() => {
+    if (banners.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentBannerIndex((prev) => (prev + 1) % banners.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [banners.length]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    if (distance > 50) {
+      setCurrentBannerIndex((prev) => (prev + 1) % banners.length); // swipe left
+    }
+    if (distance < -50) {
+      setCurrentBannerIndex((prev) => (prev === 0 ? banners.length - 1 : prev - 1)); // swipe right
+    }
+    setTouchStart(null);
+    setTouchEnd(null);
+  };
 
   // Flash sales = last 3 added products
   const flashSaleProducts = [...allProducts]
@@ -95,11 +129,44 @@ const HomePage = () => {
       {/* Mobile: Banner Section */}
       {banners.length > 0 && (
         <section className="mobile-banner-section" style={{ padding: '0 15px', marginTop: '12px', marginBottom: '10px' }}>
-          <img 
-            src={banners[0].image_url} 
-            alt="Promotion Banner" 
-            style={{ width: '100%', height: '30vh', borderRadius: '12px', objectFit: 'cover', display: 'block' }} 
-          />
+          <div 
+            style={{ position: 'relative', overflow: 'hidden', borderRadius: '12px' }}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <div style={{
+              display: 'flex',
+              transition: 'transform 0.5s ease-in-out',
+              transform: `translateX(-${currentBannerIndex * 100}%)`
+            }}>
+              {banners.map((banner, index) => (
+                <img 
+                  key={banner.id}
+                  src={banner.image_url} 
+                  alt={`Promotion Banner ${index + 1}`} 
+                  style={{ width: '100%', height: '30vh', objectFit: 'cover', display: 'block', flexShrink: 0 }} 
+                />
+              ))}
+            </div>
+            {/* Dots */}
+            {banners.length > 1 && (
+              <div style={{ position: 'absolute', bottom: '10px', left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: '6px' }}>
+                {banners.map((_, i) => (
+                  <div 
+                    key={i} 
+                    style={{ 
+                      width: i === currentBannerIndex ? '16px' : '6px', 
+                      height: '6px', 
+                      borderRadius: '6px', 
+                      background: i === currentBannerIndex ? 'var(--color-orange)' : 'rgba(255,255,255,0.7)',
+                      transition: 'all 0.3s ease'
+                    }} 
+                  />
+                ))}
+              </div>
+            )}
+          </div>
         </section>
       )}
 

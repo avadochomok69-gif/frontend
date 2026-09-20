@@ -4,9 +4,12 @@
   margin-top: 5rem;
 }
 
-/* Mobile: hide footer (replaced by bottom nav) */
+/* Mobile: hide footer (replaced by bottom nav) - User requested to show it */
 @media (max-width: 768px) {
-  .footer { display: none; }
+  .footer { 
+    display: block; 
+    padding-bottom: 80px; /* Added padding so it's not hidden behind sticky bottom nav */
+  }
 }
 
 .footer-top {
@@ -151,4 +154,10 @@
 
 @media (max-width: 1024px) {
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+}
+
+@media (max-width: 768px) {
+  .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .footer-bottom-inner { flex-direction: column; text-align: center; gap: 0.5rem; }
+  .footer-top { padding: 2rem 0 1.5rem; }
 }
