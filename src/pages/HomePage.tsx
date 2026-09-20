@@ -145,7 +145,7 @@ const HomePage = () => {
                   key={banner.id}
                   src={banner.image_url} 
                   alt={`Promotion Banner ${index + 1}`} 
-                  style={{ width: '100%', height: '30vh', objectFit: 'cover', display: 'block', flexShrink: 0 }} 
+                  style={{ width: '100%', height: '30vh', objectFit: 'contain', backgroundColor: '#f9f9f9', display: 'block', flexShrink: 0 }} 
                 />
               ))}
             </div>
