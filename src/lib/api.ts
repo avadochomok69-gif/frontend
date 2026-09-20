@@ -1,25 +1,22 @@
-// API base URL configuration for Chomok Fashion
-// Default: localhost:5001 for development
+const RENDER_BACKEND_URL = 'https://backend-tv3i.onrender.com/api/sb';
+
 const API_CANDIDATES = (() => {
   const rawEnv = import.meta.env.VITE_API_BASE_URL;
   const env = typeof rawEnv === 'string' ? rawEnv.trim() : rawEnv;
-  if (env) {
-    if (typeof window !== 'undefined') {
-      const host = window.location.hostname || '';
-      if ((env.startsWith('http://localhost') || env.startsWith('http://127.')) && !(host === 'localhost' || host.startsWith('127.'))) {
-        // if env is localhost but we are accessing via IP, use the IP instead
-        return [`http://${host}:5001/api/sb`];
-      } else {
-        return [env];
-      }
-    } else {
-      return [env];
+  const host = typeof window !== 'undefined' ? (window.location.hostname || '') : '';
+  const isLocalHost = host === 'localhost' || host.startsWith('127.');
+
+  if (typeof window !== 'undefined' && !isLocalHost) {
+    if (env && !env.includes('localhost') && !env.includes('127.0.0.1')) {
+      return [env, RENDER_BACKEND_URL];
     }
+    return [RENDER_BACKEND_URL];
   }
-  if (typeof window === 'undefined') return ['http://localhost:5001/api/sb'];
-  const host = window.location.hostname || '';
-  if (host === 'localhost' || host.startsWith('127.')) return ['http://localhost:5001/api/sb'];
-  return [`http://${host}:5001/api/sb`];
+
+  if (env) {
+    return [env, RENDER_BACKEND_URL];
+  }
+  return ['http://localhost:5001/api/sb', RENDER_BACKEND_URL];
 })();
 
 const NORMALIZED_API_CANDIDATES = API_CANDIDATES.map((c) => String(c).trim()).filter(Boolean);
